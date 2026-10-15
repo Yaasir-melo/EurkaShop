@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Eureka Shop</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div data-vue-header>
+        <header class="header"><div class="container">
+            <a class="logo" href="index.html"><h1><i class="fas fa-shopping-bag"></i> Eureka Shop</h1></a>
+            <nav class="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="products.html" aria-current="page">Products</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+            <div class="header-actions"><div class="search-box"><input type="text" placeholder="Search products..." id="searchInput" aria-label="Search products"><button id="searchBtn" type="button" aria-label="Search"><i class="fas fa-search"></i></button></div><button class="wishlist-header-btn" id="wishlistToggle" type="button" aria-label="Open wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="wishlist-label">Wishlist</span><span class="wishlist-count" id="wishlistCount" hidden>0</span></button><button class="account-btn" id="accountBtn"><i class="fas fa-user"></i> <span id="accountBtnLabel">Sign In</span></button><button class="cart-icon" id="cartIcon" type="button" aria-label="Open shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button></div>
+        </div></header>
+    </div>
+    <script type="module" src="js/vue-shell.js"></script>
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-content">
+            <div class="auth-header">
+                <h3 id="authTitle">Sign In</h3>
+                <button class="close-auth" id="closeAuth">&times;</button>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            <div class="auth-body">
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="auth-submit">Sign In</button>
+                </form>
+                <form id="signupForm" class="auth-form" style="display:none;">
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" required>
+                    </div>
+                    <button type="submit" class="auth-submit">Create Account</button>
+                    <p class="auth-hint">Customer checkout requires a verified email. Authorized admins do not need to verify.</p>
+                </form>
+                <div id="verifyNotice" class="verify-notice" style="display:none;">
+                    <p>Email verification is required for customer checkout. Authorized admin accounts do not need verification.</p>
+                    <button id="resendVerification" class="auth-submit" style="margin-top: .5rem;">Resend Verification Email</button>
+                    <p id="verifyMessage" class="auth-hint" role="status" aria-live="polite"></p>
+                </div>
+                <section class="account-details" id="accountDetails" style="display:none;" aria-label="Account details">
+                    <h4>Your account</h4>
+                    <dl class="account-facts">
+                        <div><dt>Email</dt><dd id="profileEmail"></dd></div>
+                        <div><dt>Email status</dt><dd id="profileVerification"></dd></div>
+                        <div><dt>Member since</dt><dd id="profileCreated"></dd></div>
+                        <div><dt>Last sign in</dt><dd id="profileLastSignIn"></dd></div>
+                    </dl>
+                    <section class="customer-orders" aria-labelledby="customerOrdersTitle"><h4 id="customerOrdersTitle">My orders</h4><div id="customerOrderList" class="customer-order-list"><p>Loading your orders…</p></div></section>
+                </section>
+                <div id="authError" class="auth-error" style="display:none;"></div>
+            </div>
+            <div class="auth-footer">
+                <button id="signOutBtn" class="outline-btn" style="display:none;">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2>Our Products</h2>
+            <div class="filter-buttons" id="categoryFilters"><button class="filter-btn active" data-category="all">All</button></div>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Shopping Cart</h3>
+                <button class="clear-cart-btn" id="clearCartBtn" type="button">Clear all</button>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be displayed here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total: <span id="cartTotal">GH₵0.00</span></strong>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="product-modal" id="productModal">
+        <div class="product-modal-content">
+            <button class="close-product" id="closeProduct">&times;</button>
+            <div class="product-details" id="productDetails">
+                <!-- Product details will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-content">
+            <div class="checkout-header">
+                <h3>Checkout</h3>
+                <button class="close-checkout" id="closeCheckout">&times;</button>
+            </div>
+            <form class="checkout-form" id="checkoutForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" id="phone" autocomplete="tel" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" required></textarea>
+                </div>
+                <p class="auth-hint">This sends an order request to the shop. We will contact you to confirm the total and payment method. No payment is taken on this page.</p>
+                <button type="submit" class="place-order-btn">Send order request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Eureka</h3>
+                    <p>Your trusted online shopping destination</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="https://www.fedex.com/en-us/shipping.html" target="_blank">Shipping Info</a></li>
+                        <li><a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=GKMQZ7XKJQZ7XKJQZ" target="_blank">Returns</a></li>
+                        <li><a href="https://help.shopify.com/en/manual/orders/refunds" target="_blank">FAQ</a></li>
+                        <li><a href="https://support.google.com/merchants/answer/7057942" target="_blank">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Eureka. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+	        <script type="module">
+        import { ensureVerifiedUser } from './js/auth.js';
+        window.ensureVerifiedUser = ensureVerifiedUser;
+    </script>
+    <script src="js/products-data.js"></script>
+    <script type="module" src="js/catalog.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

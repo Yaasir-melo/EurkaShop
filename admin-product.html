@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Editor | Eureka Shop</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div data-vue-header>
+        <header class="header admin-header"><div class="container">
+            <a class="logo" href="index.html"><h1><i class="fas fa-shopping-bag"></i> Eureka Shop</h1></a>
+            <nav class="nav" aria-label="Admin navigation"><ul><li><a href="admin.html">Dashboard</a></li><li><a href="admin-products.html">Manage Products</a></li><li><a href="index.html">View Store</a></li></ul></nav>
+        </div></header>
+    </div>
+    <main class="admin-main container">
+        <section class="admin-panel admin-login-panel" id="adminLoginPanel">
+            <p class="admin-eyebrow">RESTRICTED ACCESS</p><h2>Admin sign in</h2><p>Sign in with an account authorized by the store owner.</p>
+            <form id="adminLoginForm" class="admin-form" method="post" onsubmit="return false;"><label>Email<input name="email" type="email" required autocomplete="username"></label><label>Password<input name="password" type="password" required autocomplete="current-password"></label><button class="admin-submit">Sign in securely</button><p id="adminAuthMessage" class="admin-message" role="status"></p></form>
+        </section>
+        <section id="adminEditorApp" hidden>
+            <div class="admin-heading"><div><p class="admin-eyebrow">PRODUCT EDITOR</p><h2 id="adminEditorTitle">Add a product</h2><p id="adminSignedInAs"></p></div><a class="admin-back-link" href="admin-products.html"><i class="fas fa-arrow-left"></i> Back to products</a></div>
+            <section class="admin-panel">
+                <form id="adminProductForm" class="admin-form admin-editor-form">
+                    <label>Product name<input name="title" type="text" maxlength="90" required placeholder="e.g. Bluetooth Speaker"></label>
+                    <label>Description<textarea name="description" rows="4" maxlength="1200" required placeholder="Describe the product for shoppers"></textarea></label>
+                    <div class="admin-form-row"><label>Price<input name="price" type="number" min="0.01" step="0.01" required placeholder="0.00"></label><label>Category<select name="category" required><option value="">Choose category</option></select></label></div>
+                    <label>Featured photo path or URL<input name="featuredImage" type="text" placeholder="product-images/my-product.jpg"><small>This is the main photo shown on product cards and the product page.</small></label>
+                    <label>Additional product photos<textarea name="images" rows="4" placeholder="One image path or URL per line"></textarea><small>Add extra angles or gallery photos, one per line.</small></label>
+                    <label>Product variations<textarea name="variations" rows="4" placeholder="Color: Black, Blue, White&#10;Size: S, M, L"></textarea><small>Enter one option group per line in "Name: Value, Value" format. Example: Color: Black, Blue</small></label>
+                    <label class="admin-checkbox"><input name="featured" type="checkbox"> Feature this product on the home page</label>
+                    <label class="admin-checkbox"><input name="inStock" type="checkbox" checked> In stock</label>
+                    <div class="admin-editor-actions"><button class="admin-submit" type="submit"><i class="fas fa-save"></i> <span id="adminSaveLabel">Add product</span></button><p id="adminProductMessage" class="admin-message" role="status" aria-live="polite"></p></div>
+                </form>
+            </section>
+        </section>
+    </main>
+    <script src="js/admin-file-guard.js"></script>
+    <script type="module" src="js/vue-shell.js"></script>
+    <script src="js/products-data.js"></script>
+    <script type="module" src="js/admin-product.js"></script>
+</body>
+</html>

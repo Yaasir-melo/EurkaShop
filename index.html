@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureka Shop | Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div data-vue-header>
+        <header class="header"><div class="container">
+            <a class="logo" href="index.html"><h1><i class="fas fa-shopping-bag"></i> Eureka Shop</h1></a>
+            <nav class="nav" aria-label="Main navigation"><ul><li><a href="index.html" aria-current="page">Home</a></li><li><a href="products.html">Products</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></nav>
+            <div class="header-actions home-actions"><button class="wishlist-header-btn" id="wishlistToggle" type="button" aria-label="Open wishlist"><i class="fas fa-heart" aria-hidden="true"></i><span class="wishlist-label">Wishlist</span><span class="wishlist-count" id="wishlistCount" hidden>0</span></button><button class="account-btn" id="accountBtn" data-open-signup="true"><i class="fas fa-user"></i> <span id="accountBtnLabel">Sign Up</span></button><button class="cart-icon" id="cartIcon" type="button" aria-label="Open shopping cart"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></button></div>
+        </div></header>
+    </div>
+    <script type="module" src="js/vue-shell.js"></script>
+    <main>
+        <section class="shop-welcome" id="home" aria-labelledby="welcomeTitle">
+            <a class="welcome-feature" id="welcomeFeature" href="products.html">
+                <div class="welcome-copy">
+                    <span class="eyebrow">EUREKA SHOP - EVERYDAY FINDS</span>
+                    <h2 id="welcomeTitle">Good things for<br>every part of life.</h2>
+                    <p>Browse useful finds across the categories you love.</p>
+                    <span class="welcome-cta">Explore the collection <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+            <div class="category-showcase" id="categoryShowcase" aria-label="Shop by category"></div>
+        </section>
+    </main>
+    <div class="auth-modal" id="authModal">
+        <div class="auth-content">
+            <div class="auth-header">
+                <h3 id="authTitle">Sign In</h3>
+                <button class="close-auth" id="closeAuth">&times;</button>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            <div class="auth-body">
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="auth-submit">Sign In</button>
+                </form>
+                <form id="signupForm" class="auth-form" style="display:none;">
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" required>
+                    </div>
+                    <button type="submit" class="auth-submit">Create Account</button>
+                    <p class="auth-hint">Customer checkout requires a verified email. Authorized admins do not need to verify.</p>
+                </form>
+                <div id="verifyNotice" class="verify-notice" style="display:none;">
+                    <p>Email verification is required for customer checkout. Authorized admin accounts do not need verification.</p>
+                    <button id="resendVerification" class="auth-submit" style="margin-top: .5rem;">Resend Verification Email</button>
+                    <p id="verifyMessage" class="auth-hint" role="status" aria-live="polite"></p>
+                </div>
+                <section class="account-details" id="accountDetails" style="display:none;" aria-label="Account details">
+                    <h4>Your account</h4>
+                    <dl class="account-facts">
+                        <div><dt>Email</dt><dd id="profileEmail"></dd></div>
+                        <div><dt>Email status</dt><dd id="profileVerification"></dd></div>
+                        <div><dt>Member since</dt><dd id="profileCreated"></dd></div>
+                        <div><dt>Last sign in</dt><dd id="profileLastSignIn"></dd></div>
+                    </dl>
+                    <section class="customer-orders" aria-labelledby="customerOrdersTitle"><h4 id="customerOrdersTitle">My orders</h4><div id="customerOrderList" class="customer-order-list"><p>Loading your orders…</p></div></section>
+                </section>
+                <div id="authError" class="auth-error" style="display:none;"></div>
+            </div>
+            <div class="auth-footer">
+                <button id="signOutBtn" class="outline-btn" style="display:none;">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Shopping Cart</h3>
+                <button class="clear-cart-btn" id="clearCartBtn" type="button">Clear all</button>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be displayed here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <strong>Total: <span id="cartTotal">GH₵0.00</span></strong>
+                </div>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-content">
+            <div class="checkout-header">
+                <h3>Checkout</h3>
+                <button class="close-checkout" id="closeCheckout">&times;</button>
+            </div>
+            <form class="checkout-form" id="checkoutForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" id="phone" autocomplete="tel" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" required></textarea>
+                </div>
+                <p class="auth-hint">This sends an order request to the shop. We will contact you to confirm the total and payment method. No payment is taken on this page.</p>
+                <button type="submit" class="place-order-btn">Send order request</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-bottom"><p>&copy; 2026 Eureka Shop</p><a href="admin.html">Product dashboard</a></div>
+    </footer>
+    <script>
+        if (window.location.protocol === 'file:') {
+            const accountModal = document.getElementById('authModal');
+            const signupTab = document.querySelector('.auth-tab[data-tab="signup"]');
+            const loginTab = document.querySelector('.auth-tab[data-tab="login"]');
+            const signupForm = document.getElementById('signupForm');
+            const loginForm = document.getElementById('loginForm');
+            const showFileProtocolHelp = () => {
+                document.getElementById('authError').textContent = 'Firebase sign-up needs the site to run from a web address, not a file opened from your computer. In PowerShell, open the project folder and run: py -m http.server 8000. Then visit http://localhost:8000.';
+                document.getElementById('authError').style.display = '';
+            };
+            document.getElementById('accountBtn')?.addEventListener('click', () => accountModal?.classList.add('show'));
+            document.getElementById('closeAuth')?.addEventListener('click', () => accountModal?.classList.remove('show'));
+            signupTab?.addEventListener('click', () => {
+                signupForm.style.display = '';
+                loginForm.style.display = 'none';
+                document.getElementById('authTitle').textContent = 'Sign Up';
+                document.getElementById('authError').style.display = 'none';
+            });
+            loginTab?.addEventListener('click', () => {
+                loginForm.style.display = '';
+                signupForm.style.display = 'none';
+                document.getElementById('authTitle').textContent = 'Sign In';
+                document.getElementById('authError').style.display = 'none';
+            });
+            signupForm?.addEventListener('submit', event => {
+                event.preventDefault();
+                showFileProtocolHelp();
+            });
+            loginForm?.addEventListener('submit', event => {
+                event.preventDefault();
+                showFileProtocolHelp();
+            });
+        }
+    </script>
+            <script type="module">
+        import { ensureVerifiedUser } from './js/auth.js';
+        window.ensureVerifiedUser = ensureVerifiedUser;
+    </script>
+    <script src="js/products-data.js"></script>
+    <script type="module" src="js/catalog.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

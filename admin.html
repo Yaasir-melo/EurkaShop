@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Eureka Shop</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div data-vue-header>
+        <header class="header admin-header"><div class="container">
+            <a class="logo" href="index.html"><h1><i class="fas fa-shopping-bag"></i> Eureka Shop</h1></a>
+            <nav class="nav" aria-label="Admin navigation"><ul><li><a href="index.html">View Store</a></li><li><a href="admin-products.html">Manage Products</a></li></ul></nav>
+        </div></header>
+    </div>
+    <main class="admin-main container">
+        <section class="admin-panel admin-login-panel" id="adminLoginPanel">
+            <p class="admin-eyebrow">RESTRICTED ACCESS</p><h2>Admin sign in</h2><p>Sign in with an account authorized by the store owner.</p>
+            <form id="adminLoginForm" class="admin-form" method="post" onsubmit="return false;">
+                <label>Email<input name="email" type="email" required autocomplete="username"></label>
+                <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+                <button class="admin-submit" type="submit">Sign in securely</button>
+                <p id="adminAuthMessage" class="admin-message" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+        <section id="adminDashboard" hidden>
+            <div class="admin-heading">
+                <div><p class="admin-eyebrow">STORE MANAGEMENT</p><h2>Admin dashboard</h2><p>Signed in as <strong id="adminSignedInAs"></strong></p></div>
+                <button id="adminSignOut" class="admin-signout" type="button">Sign out</button>
+            </div>
+            <section class="admin-panel admin-orders-panel" aria-labelledby="adminOrdersTitle">
+                <div class="admin-list-heading"><div><h3 id="adminOrdersTitle">Order requests</h3><span>Review new orders and update their status for customers.</span></div></div>
+                <p id="adminOrdersMessage" class="admin-message" role="status" aria-live="polite"></p>
+                <div class="admin-table-wrap"><table class="admin-product-table admin-order-table"><thead><tr><th>Order</th><th>Customer</th><th>Contact and address</th><th>Items</th><th>Status</th><th>Save</th></tr></thead><tbody id="adminOrderRows"></tbody></table></div>
+                <p id="adminOrdersEmpty" class="admin-empty" hidden>No order requests yet.</p>
+            </section>
+            <section class="admin-panel admin-migration-box">
+                <h3>Bring in your existing catalog</h3>
+                <p id="migrationStatus">Move the products currently built into the site into Firestore so you can manage them here.</p>
+                <button class="admin-migrate" id="migrateCatalog" type="button"><i class="fas fa-cloud-upload-alt"></i> Migrate built-in products</button>
+                <p id="adminMessage" class="admin-message" role="status" aria-live="polite"></p>
+            </section>
+            <div class="admin-actions-grid">
+                <a class="admin-action-card" href="admin-products.html"><i class="fas fa-boxes-stacked"></i><strong>View all products</strong><span>Search, edit, feature, or delete products.</span></a>
+                <a class="admin-action-card" href="admin-product.html"><i class="fas fa-plus-circle"></i><strong>Add a product</strong><span>Add photos, variations, and product details.</span></a>
+            </div>
+            <section class="admin-panel admin-category-manager">
+                <h3>Manage categories</h3>
+                <p>Add categories here; they become available in the shop filters and product editor.</p>
+                <form id="adminCategoryForm" class="admin-category-form">
+                    <label>Category name<input name="name" type="text" maxlength="40" required placeholder="e.g. Outdoor Living"></label>
+                    <label>Category photo (optional)<input name="image" type="text" placeholder="product-images/category-cover.jpg"></label>
+                    <button class="admin-submit" type="submit">Add category</button>
+                </form>
+                <p id="categoryMessage" class="admin-message" role="status" aria-live="polite"></p>
+                <div id="adminCategoryList" class="admin-category-list"></div>
+            </section>
+            <p class="admin-note"><i class="fas fa-info-circle"></i> Product access is enforced by Firebase security rules. Only authorized admins can make changes.</p>
+        </section>
+    </main>
+    <script src="js/admin-file-guard.js"></script>
+    <script type="module" src="js/vue-shell.js"></script>
+    <script src="js/products-data.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>
