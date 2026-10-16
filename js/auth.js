@@ -29,8 +29,35 @@ const profileLastSignIn = document.getElementById('profileLastSignIn');
 const resendVerification = document.getElementById('resendVerification');
 const signOutBtn = document.getElementById('signOutBtn');
 const customerOrderList = document.getElementById('customerOrderList');
+const signupPasswordInput = document.getElementById('signupPassword');
+const confirmPasswordInput = document.getElementById('confirmPassword');
 let currentUserIsAdmin = false;
 let stopCustomerOrders = null;
+
+// Let users reveal passwords temporarily while typing.
+document.querySelectorAll('[data-password-target]').forEach(button => {
+    button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.passwordTarget);
+        if (!input) return;
+        const showPassword = input.type === 'password';
+        input.type = showPassword ? 'text' : 'password';
+        const icon = button.querySelector('i');
+        icon?.classList.toggle('fa-eye', !showPassword);
+        icon?.classList.toggle('fa-eye-slash', showPassword);
+        button.setAttribute('aria-label', `${showPassword ? 'Hide' : 'Show'} password`);
+        button.setAttribute('aria-pressed', String(showPassword));
+    });
+});
+
+function validatePasswordConfirmation() {
+    if (!signupPasswordInput || !confirmPasswordInput) return true;
+    const matches = signupPasswordInput.value === confirmPasswordInput.value;
+    confirmPasswordInput.setCustomValidity(matches ? '' : 'Passwords do not match.');
+    return matches;
+}
+
+signupPasswordInput?.addEventListener('input', validatePasswordConfirmation);
+confirmPasswordInput?.addEventListener('input', validatePasswordConfirmation);
 
 function escapeHTML(value) {
     return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
@@ -152,6 +179,12 @@ window.addEventListener('click', (e) => { if (e.target === authModal) closeAuthM
 signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     authError.style.display = 'none';
+    if (!validatePasswordConfirmation()) {
+        authError.textContent = 'The passwords do not match. Please check both fields.';
+        authError.style.display = '';
+        confirmPasswordInput.reportValidity();
+        return;
+    }
     const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
     const submitButton = signupForm.querySelector('[type="submit"]');
@@ -202,7 +235,14 @@ loginForm.addEventListener('submit', async (e) => {
         }
         closeAuthModal();
     } catch (err) {
-        authError.textContent = err.message;
+        const loginMessages = {
+            'auth/invalid-credential': 'That email and password do not match an account. Check the spelling, or use Show to review the password before trying again.',
+            'auth/wrong-password': 'That password is incorrect. Check the spelling, or use Show to review it before trying again.',
+            'auth/user-not-found': 'No account was found for that email. Check the email or sign up first.',
+            'auth/too-many-requests': 'There have been too many sign-in attempts. Wait a little while, then try again.',
+            'auth/network-request-failed': 'Firebase could not be reached. Check your internet connection and try again.'
+        };
+        authError.textContent = loginMessages[err.code] || `Could not sign in (${err.code || err.message}).`;
         authError.style.display = '';
     }
 });

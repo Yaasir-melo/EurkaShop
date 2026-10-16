@@ -626,6 +626,11 @@ body {
 
 .auth-body { padding: 1.5rem; }
 .auth-form .form-group { margin-bottom: 1rem; }
+.password-field { display: flex; align-items: stretch; gap: .5rem; }
+.password-field input { flex: 1; min-width: 0; }
+.password-toggle { flex: 0 0 46px; padding: 0 .75rem; border: 1px solid #b8c4c8; border-radius: 8px; background: #fff; color: #075b68; font-size: 1rem; cursor: pointer; }
+.password-toggle:hover { background: #eaf8fa; }
+.password-toggle:focus-visible { outline: 3px solid #00bcd4; outline-offset: 2px; }
 .auth-submit {
     width: 100%;
     background: linear-gradient(45deg, #00bcd4, #0097a7);
