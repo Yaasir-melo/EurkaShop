@@ -79,7 +79,7 @@ service cloud.firestore {
         || (request.auth != null && resource.data.userId == request.auth.uid);
       allow update: if isAdmin()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
-        && request.resource.data.status in ['pending', 'confirmed', 'cancelled', 'fulfilled'];
+        && request.resource.data.status in ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'cancelled', 'fulfilled'];
       allow delete: if isAdmin();
     }
 

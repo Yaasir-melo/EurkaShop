@@ -744,7 +744,7 @@ async function handleCheckout(e) {
         updateCartDisplay();
         checkoutModal.classList.remove('show');
         checkoutForm.reset();
-        showNotification(`Order request sent (${result.id}). The shop will contact you to confirm price and payment. No payment was taken.`, 'success');
+        showNotification(`Order request sent. Your tracking and delivery claim code is ${result.id}. See Track Orders for progress. The shop will contact you to confirm price and payment; no payment was taken.`, 'success');
     } catch (error) {
         console.error('Could not send order request.', error);
         const code = error?.code || 'unknown-error';

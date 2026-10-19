@@ -80,8 +80,8 @@ function watchCustomerOrders(user) {
                 const created = order.createdAt?.toDate?.();
                 const date = created ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(created) : 'Date unavailable';
                 const items = Array.isArray(order.items) ? order.items.map(item => `<li>${escapeHTML(item.title)} × ${Number(item.quantity) || 1}${Object.entries(item.options || {}).map(([name, value]) => ` — ${escapeHTML(name)}: ${escapeHTML(value)}`).join('')}</li>`).join('') : '';
-                const status = ['pending', 'confirmed', 'cancelled', 'fulfilled'].includes(order.status) ? order.status : 'pending';
-                return `<article class="customer-order-card"><div class="customer-order-heading"><strong>Order ${escapeHTML(order.id.slice(-8))}</strong><span class="customer-order-status status-${status}">${escapeHTML(status)}</span></div><time>${escapeHTML(date)}</time><ul>${items}</ul></article>`;
+                const status = ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'cancelled', 'fulfilled'].includes(order.status) ? order.status : 'pending';
+                return `<article class="customer-order-card"><div class="customer-order-heading"><strong>Order ${escapeHTML(order.id.slice(-8))}</strong><span class="customer-order-status status-${status}">${escapeHTML(status.replaceAll('_', ' '))}</span></div><time>${escapeHTML(date)}</time><p>Claim code: <code>${escapeHTML(order.id)}</code></p><ul>${items}</ul></article>`;
             }).join('');
         },
         error => { customerOrderList.innerHTML = `<p>Could not load orders: ${escapeHTML(error.message)}</p>`; }

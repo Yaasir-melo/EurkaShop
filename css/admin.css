@@ -90,6 +90,14 @@
 .admin-order-items { min-width: 150px; margin: 0; padding-left: 1.15rem; }
 .admin-order-items li + li { margin-top: .35rem; }
 .admin-order-status { min-width: 120px; padding: .55rem; border: 1px solid #cddde0; border-radius: 8px; background: #fff; color: #24383d; font: inherit; }
+.admin-tracking-code { display: block; min-width: 150px; max-width: 220px; }
+.delivery-claim-form { display: grid; gap: .55rem; margin: 1rem 0; padding: 1rem; border: 1px solid #cbdfe2; border-radius: 12px; background: #f2fbfc; }
+.delivery-claim-form > label { color: #23474e; font-weight: 750; }
+.delivery-claim-form > div { display: flex; flex-wrap: wrap; gap: .55rem; }
+.delivery-claim-form input { flex: 1 1 260px; min-width: 0; padding: .7rem .8rem; border: 1px solid #b7cdd1; border-radius: 8px; font: inherit; }
+.delivery-claim-form small { color: #5a7074; }
+.delivery-claim-result { display: grid; gap: .5rem; margin-bottom: 1rem; color: #244c53; }
+.delivery-claim-result.is-error { color: #a13028; }
 .admin-order-save { padding: .55rem .7rem; border: 0; border-radius: 8px; background: #0097a7; color: #fff; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
 .admin-order-save:hover { background: #007d8b; }
 .admin-order-save:disabled { opacity: .6; cursor: wait; }

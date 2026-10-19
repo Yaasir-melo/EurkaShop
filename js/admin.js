@@ -10,6 +10,7 @@ const messageElement = document.getElementById('adminMessage');
 let stopSettingsListener = null;
 let stopOrdersListener = null;
 let storeCategories = window.EUREKA_BASE_CATEGORIES || [];
+let ordersByTrackingCode = new Map();
 
 function escapeHTML(value) {
     return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
@@ -64,6 +65,7 @@ function startOrdersListener() {
     const empty = document.getElementById('adminOrdersEmpty');
     const message = document.getElementById('adminOrdersMessage');
     stopOrdersListener = onSnapshot(query(collection(db, 'orderRequests'), orderBy('createdAt', 'desc')), snapshot => {
+        ordersByTrackingCode = new Map(snapshot.docs.map(orderDoc => [orderDoc.id, orderDoc.data()]));
         empty.hidden = snapshot.docs.length > 0;
         rows.innerHTML = snapshot.docs.map(orderDoc => {
             const order = orderDoc.data();
@@ -73,8 +75,8 @@ function startOrdersListener() {
                 const options = Object.entries(item.options || {}).map(([name, value]) => `${escapeHTML(name)}: ${escapeHTML(value)}`).join(', ');
                 return `<li>${escapeHTML(item.title)} × ${Number(item.quantity) || 1}${options ? `<small>${options}</small>` : ''}</li>`;
             }).join('') : '<li>No item details</li>';
-            const status = ['pending', 'confirmed', 'cancelled', 'fulfilled'].includes(order.status) ? order.status : 'pending';
-            return `<tr><td><strong>${escapeHTML(orderDoc.id.slice(-8))}</strong><small>${escapeHTML(date)}</small></td><td>${escapeHTML(order.fullName || 'Customer')}<small>${escapeHTML(order.email || '')}</small></td><td>${escapeHTML(order.phone || '')}<small>${escapeHTML(order.address || '')}</small></td><td><ul class="admin-order-items">${items}</ul></td><td><select class="admin-order-status" data-order-status="${escapeHTML(orderDoc.id)}" aria-label="Status for order ${escapeHTML(orderDoc.id.slice(-8))}"><option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option><option value="confirmed" ${status === 'confirmed' ? 'selected' : ''}>Confirmed</option><option value="cancelled" ${status === 'cancelled' ? 'selected' : ''}>Cancelled</option><option value="fulfilled" ${status === 'fulfilled' ? 'selected' : ''}>Fulfilled</option></select></td><td><button class="admin-order-save" type="button" data-save-order="${escapeHTML(orderDoc.id)}">Save status</button></td></tr>`;
+            const status = ['pending', 'confirmed', 'preparing', 'out_for_delivery', 'cancelled', 'fulfilled'].includes(order.status) ? order.status : 'pending';
+            return `<tr><td><code class="admin-tracking-code">${escapeHTML(orderDoc.id)}</code><small>Placed ${escapeHTML(date)}</small></td><td>${escapeHTML(order.fullName || 'Customer')}<small>${escapeHTML(order.email || '')}</small></td><td>${escapeHTML(order.phone || '')}<small>${escapeHTML(order.address || '')}</small></td><td><ul class="admin-order-items">${items}</ul></td><td><select class="admin-order-status" data-order-status="${escapeHTML(orderDoc.id)}" aria-label="Status for order ${escapeHTML(orderDoc.id.slice(-8))}"><option value="pending" ${status === 'pending' ? 'selected' : ''}>Pending</option><option value="confirmed" ${status === 'confirmed' ? 'selected' : ''}>Confirmed</option><option value="preparing" ${status === 'preparing' ? 'selected' : ''}>Preparing</option><option value="out_for_delivery" ${status === 'out_for_delivery' ? 'selected' : ''}>Out for delivery</option><option value="cancelled" ${status === 'cancelled' ? 'selected' : ''}>Cancelled</option><option value="fulfilled" ${status === 'fulfilled' ? 'selected' : ''}>Delivered / handed over</option></select></td><td><button class="admin-order-save" type="button" data-save-order="${escapeHTML(orderDoc.id)}">Save status</button></td></tr>`;
         }).join('');
         message.textContent = '';
     }, error => {
@@ -89,7 +91,7 @@ document.getElementById('adminOrderRows').addEventListener('click', async event 
     if (!button) return;
     const id = button.dataset.saveOrder;
     const status = document.querySelector(`[data-order-status="${CSS.escape(id)}"]`)?.value;
-    if (!['pending', 'confirmed', 'cancelled', 'fulfilled'].includes(status)) return;
+    if (!['pending', 'confirmed', 'preparing', 'out_for_delivery', 'cancelled', 'fulfilled'].includes(status)) return;
     const message = document.getElementById('adminOrdersMessage');
     button.disabled = true;
     try {
@@ -101,6 +103,54 @@ document.getElementById('adminOrderRows').addEventListener('click', async event 
         message.textContent = `Could not update order: ${error.message}`;
     } finally {
         button.disabled = false;
+    }
+});
+
+document.getElementById('deliveryClaimForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const enteredCode = document.getElementById('deliveryClaimCode').value.trim();
+    const result = document.getElementById('deliveryClaimResult');
+    const order = ordersByTrackingCode.get(enteredCode);
+    if (!order) {
+        result.className = 'delivery-claim-result is-error';
+        result.textContent = 'No order matches that code. Check the code with the customer.';
+        return;
+    }
+    if (order.status === 'cancelled') {
+        result.className = 'delivery-claim-result is-error';
+        result.textContent = `This order for ${order.fullName || 'the customer'} was cancelled. Do not hand it over.`;
+        return;
+    }
+    if (order.status === 'fulfilled') {
+        result.className = 'delivery-claim-result';
+        result.textContent = `This order for ${order.fullName || 'the customer'} has already been marked delivered.`;
+        return;
+    }
+    if (order.status !== 'out_for_delivery') {
+        result.className = 'delivery-claim-result is-error';
+        result.textContent = `The code matches ${order.fullName || 'the customer'}, but the order is not marked out for delivery yet. Current status: ${(order.status || 'pending').replaceAll('_', ' ')}.`;
+        return;
+    }
+    result.className = 'delivery-claim-result';
+    result.innerHTML = `<p>Code matched an order for <strong>${escapeHTML(order.fullName || 'Customer')}</strong> (${escapeHTML(order.phone || 'no phone listed')}).</p><p>Confirm the customer and package before completing the handover.</p><button type="button" class="admin-order-save" data-confirm-handoff="${escapeHTML(enteredCode)}">Confirm handover and mark delivered</button>`;
+});
+
+document.getElementById('deliveryClaimResult').addEventListener('click', async event => {
+    const button = event.target.closest('[data-confirm-handoff]');
+    if (!button) return;
+    const code = button.dataset.confirmHandoff;
+    button.disabled = true;
+    try {
+        await updateDoc(doc(db, 'orderRequests', code), { status: 'fulfilled' });
+        const result = document.getElementById('deliveryClaimResult');
+        result.className = 'delivery-claim-result';
+        result.textContent = 'Handover confirmed. The order is now marked delivered.';
+        document.getElementById('deliveryClaimForm').reset();
+    } catch (error) {
+        button.disabled = false;
+        const result = document.getElementById('deliveryClaimResult');
+        result.classList.add('is-error');
+        result.textContent = `Could not confirm handover: ${error.message}`;
     }
 });
 

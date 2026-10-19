@@ -33,7 +33,9 @@
             <section class="admin-panel admin-orders-panel" aria-labelledby="adminOrdersTitle">
                 <div class="admin-list-heading"><div><h3 id="adminOrdersTitle">Order requests</h3><span>Review new orders and update their status for customers.</span></div></div>
                 <p id="adminOrdersMessage" class="admin-message" role="status" aria-live="polite"></p>
-                <div class="admin-table-wrap"><table class="admin-product-table admin-order-table"><thead><tr><th>Order</th><th>Customer</th><th>Contact and address</th><th>Items</th><th>Status</th><th>Save</th></tr></thead><tbody id="adminOrderRows"></tbody></table></div>
+                <form class="delivery-claim-form" id="deliveryClaimForm"><label for="deliveryClaimCode">Verify a delivery claim code</label><div><input id="deliveryClaimCode" type="text" autocomplete="off" required placeholder="Paste the customer’s code"><button type="submit" class="admin-submit">Verify code</button></div><small>Use this when a customer presents their code to claim an order. Only continue if the code matches the order.</small></form>
+                <div id="deliveryClaimResult" class="delivery-claim-result" role="status" aria-live="polite"></div>
+                <div class="admin-table-wrap"><table class="admin-product-table admin-order-table"><thead><tr><th>Tracking / claim code</th><th>Customer</th><th>Contact and address</th><th>Items</th><th>Status</th><th>Save</th></tr></thead><tbody id="adminOrderRows"></tbody></table></div>
                 <p id="adminOrdersEmpty" class="admin-empty" hidden>No order requests yet.</p>
             </section>
             <section class="admin-panel admin-migration-box">

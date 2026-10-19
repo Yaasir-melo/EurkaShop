@@ -1328,6 +1328,46 @@ body { background: #f4f5f6; color: #232323; }
 .customer-order-status.status-confirmed { background: #e7f4ff; color: #135f98; }
 .customer-order-status.status-fulfilled { background: #e6f7ed; color: #187244; }
 .customer-order-status.status-cancelled { background: #fff0ef; color: #a13028; }
+.customer-order-status.status-preparing { background: #f0eaff; color: #6744a0; }
+.customer-order-status.status-out_for_delivery { background: #e1f7f7; color: #087987; }
+.tracking-container { width: min(1050px, calc(100% - 36px)); margin: 120px auto 56px; }
+.tracking-intro { margin-bottom: 1.5rem; }
+.tracking-eyebrow { color: #087987; font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+.tracking-intro h2 { margin: .2rem 0 .4rem; color: #20353a; font-size: clamp(1.8rem, 4vw, 2.5rem); }
+.tracking-intro > p:last-child { max-width: 680px; color: #566b70; }
+.tracking-message { margin: 1rem 0; color: #41575c; }
+.tracking-order-list { display: grid; gap: 1rem; }
+.tracking-order-card { padding: clamp(1rem, 3vw, 1.5rem); border: 1px solid #d9e6e8; border-radius: 16px; background: #fff; box-shadow: 0 6px 24px rgba(24, 64, 70, .08); }
+.tracking-order-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.tracking-order-heading h3 { color: #163b43; font-size: 1.15rem; }
+.tracking-order-heading p { color: #718186; font-size: .84rem; }
+.tracking-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .35rem; margin: 1.3rem 0; padding: 0; list-style: none; }
+.tracking-steps li { position: relative; display: grid; justify-items: center; gap: .45rem; color: #7d8a8e; text-align: center; }
+.tracking-steps li::before { position: absolute; top: 15px; left: calc(-50% - .15rem); width: calc(100% - .35rem); height: 3px; background: #dce6e8; content: ''; }
+.tracking-steps li:first-child::before { display: none; }
+.tracking-steps li > span { z-index: 1; display: grid; width: 31px; height: 31px; place-items: center; border: 2px solid #cbd8db; border-radius: 50%; background: #fff; font-size: .8rem; font-weight: 700; }
+.tracking-steps li.is-complete, .tracking-steps li.is-current { color: #087987; }
+.tracking-steps li.is-complete::before, .tracking-steps li.is-current::before { background: #00a9b7; }
+.tracking-steps li.is-complete > span, .tracking-steps li.is-current > span { border-color: #00a9b7; background: #00a9b7; color: #fff; }
+.tracking-steps li small { font-size: .72rem; line-height: 1.2; }
+.tracking-order-details { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1rem; padding-top: 1rem; border-top: 1px solid #e6edef; }
+.tracking-order-details h4 { margin-bottom: .4rem; color: #263f44; }
+.tracking-order-details ul { padding-left: 1.2rem; color: #4c6065; }
+.tracking-code-panel { padding: .9rem; border-radius: 12px; background: #eefbfc; }
+.tracking-code-panel > p { color: #526c71; font-size: .88rem; }
+.tracking-code-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .55rem; }
+.tracking-code-row code, .admin-tracking-code { overflow-wrap: anywhere; color: #123e47; font-size: .93rem; font-weight: 800; letter-spacing: .06em; }
+.tracking-copy-btn, .tracking-signin-btn, .tracking-shop-link { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; padding: .55rem .8rem; border: 0; border-radius: 8px; background: #087987; color: #fff; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
+.tracking-copy-btn:hover, .tracking-signin-btn:hover, .tracking-shop-link:hover { background: #075e68; }
+.tracking-copy-message { min-height: 1.2em; margin-top: .3rem; color: #087987; font-size: .8rem; }
+.tracking-cancelled { margin: 1rem 0; padding: .75rem; border-radius: 8px; background: #fff0ef; color: #a13028; }
+@media (max-width: 640px) {
+    .tracking-container { margin-top: 155px; }
+    .tracking-steps { gap: .1rem; }
+    .tracking-steps li small { font-size: .62rem; }
+    .tracking-order-details { grid-template-columns: 1fr; }
+    .tracking-order-heading { align-items: flex-start; }
+}
 .product-not-found { padding: 70px 20px; text-align: center; border-radius: 14px; background: #fff; }
 .product-not-found a { display: inline-block; margin-top: 16px; color: #126782; }
 @media (max-width: 768px) {

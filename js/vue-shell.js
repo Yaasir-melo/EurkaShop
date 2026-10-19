@@ -8,6 +8,7 @@ const currentPage = currentFile.replace('.html', '') || 'index';
 const publicLinks = [
     ['index.html', 'Home', 'index'],
     ['products.html', 'Products', 'products'],
+    ['track-orders.html', 'Track Orders', 'track-orders'],
     ['about.html', 'About', 'about'],
     ['contact.html', 'Contact', 'contact']
 ];
